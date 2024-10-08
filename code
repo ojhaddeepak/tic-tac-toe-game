@@ -1,0 +1,121 @@
+import java.util.Scanner;
+
+public class TicTacToe {
+    private static char[][] board = new char[3][3];
+    private static char currentPlayer = 'X';
+
+    public static void main(String[] args) {
+        initializeBoard();
+        playGame();
+    }
+
+    // Initialize the game board with empty spaces
+    private static void initializeBoard() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                board[i][j] = '-';
+            }
+        }
+    }
+
+    // Print the current state of the board
+    private static void printBoard() {
+        System.out.println("Board:");
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    // Switch the player between X and O
+    private static void switchPlayer() {
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+    // Check if the board is full (i.e., game is a draw)
+    private static boolean isBoardFull() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == '-') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // Check if a player has won the game
+    private static boolean checkWin() {
+        // Check rows, columns, and diagonals
+        return (checkRows() || checkColumns() || checkDiagonals());
+    }
+
+    // Check if any row has the same mark
+    private static boolean checkRows() {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == currentPlayer && board[i][1] == currentPlayer && board[i][2] == currentPlayer) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Check if any column has the same mark
+    private static boolean checkColumns() {
+        for (int i = 0; i < 3; i++) {
+            if (board[0][i] == currentPlayer && board[1][i] == currentPlayer && board[2][i] == currentPlayer) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Check the two diagonals
+    private static boolean checkDiagonals() {
+        if (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == currentPlayer) {
+            return true;
+        }
+        if (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == currentPlayer) {
+            return true;
+        }
+        return false;
+    }
+
+    // Play the game: input moves, check for win/draw, and switch players
+    private static void playGame() {
+        Scanner scanner = new Scanner(System.in);
+        boolean gameWon = false;
+
+        while (!gameWon && !isBoardFull()) {
+            printBoard();
+            System.out.println("Player " + currentPlayer + "'s turn.");
+            System.out.println("Enter row (0-2) and column (0-2):");
+            int row = scanner.nextInt();
+            int col = scanner.nextInt();
+
+            if (row < 0 || row > 2 || col < 0 || col > 2 || board[row][col] != '-') {
+                System.out.println("Invalid move. Try again.");
+                continue;
+            }
+
+            board[row][col] = currentPlayer;
+            gameWon = checkWin();
+
+            if (!gameWon) {
+                switchPlayer();
+            }
+        }
+
+        printBoard();
+
+        if (gameWon) {
+            System.out.println("Player " + currentPlayer + " wins!");
+        } else {
+            System.out.println("The game is a draw!");
+        }
+
+        scanner.close();
+    }
+}
